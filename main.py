@@ -570,4 +570,4 @@ def get_sdgs_count():
         'available_years': available_years
     })
 if __name__ == '__main__':
-    app.run(host="", port=3900)
+    app.run(host="", port=8080)
