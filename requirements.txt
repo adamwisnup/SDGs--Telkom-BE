@@ -122,7 +122,7 @@ PySocks==1.7.1
 pytesseract==0.3.10
 python-dateutil==2.9.0.post0
 pytz==2024.1
-pywin32==306
+pywin32==3.0.6
 PyYAML==6.0.2
 pyzmq==26.1.0
 referencing==0.35.1
