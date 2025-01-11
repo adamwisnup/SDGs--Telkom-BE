@@ -9,6 +9,7 @@ from transformers import pipeline, AutoTokenizer
 from oplib.main import run_oplib_main
 from oplib.oplib2 import OpenLibrary
 from oplib.preprocessOplib import PreprocessLibrary
+import logging
 #from sinta.preprocessSinta import SintaPreprocessor
 #from sinta.main import run_sinta_main
 import fitz
@@ -429,6 +430,80 @@ def upload_file():
     except Exception as e:
         print("Terjadi error:", str(e))
         return jsonify({'error': str(e)}), 500
+    
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def truncate_text(text, tokenizer, max_length=512):
+    tokens = tokenizer.tokenize(text)
+    if len(tokens > max_length):
+        return tokenizer.convert_tokens_to_string(tokens[:max_length])
+    return text
+
+def classify_sdgs(text):
+    tokenizer = AutoTokenizer.from_pretrained("Zaniiiii/sdgs")
+    classifier = pipeline("text-classification", model="Zaniiiii/sdgs", return_all_scores=True)
+    truncated_text = truncate_text(text, tokenizer)
+    results = classifier(truncated_text)
+    labels = [result['label'] for result in results[0] if result['score'] > 0.5]
+    return labels if labels else None
+
+@app.route('/model/paper', methods=['POST'])
+def post_paper():
+    try:
+        data = request.json
+        logging.info("Received data: %s", data)  # Logging data yang diterima
+
+        required_fields = ['Judul', 'Penulis', 'Tahun', 'Abstrak', 'Source']
+        if not data or not all(field in data for field in required_fields):
+            logging.warning("Invalid JSON data or missing fields: %s", data)
+            return jsonify({'error': 'Invalid JSON data or missing fields'}), 400
+
+        abstrak = data['Abstrak']
+        sdgs_result = classify_sdgs(abstrak)
+
+        if not sdgs_result:
+            logging.warning("SDGs classification failed for abstract: %s", abstrak)
+            return jsonify({'error': 'SDGs classification failed'}), 400
+
+        data['Sdgs'] = sdgs_result
+
+        try:
+            with open('hasil_akhir.json', 'r', encoding='utf-8') as f:
+                hasil_akhir = json.load(f)
+        except FileNotFoundError:
+            hasil_akhir = []
+
+        hasil_akhir.append(data)
+
+        with open('hasil_akhir.json', 'w', encoding='utf-8') as f:
+            json.dump(hasil_akhir, f, ensure_ascii=False, indent=4)
+
+        logging.info("Data added successfully: %s", data)
+        return jsonify({
+            'message': 'Data added successfully',
+            'Judul': data['Judul'],
+            'Penulis': data['Penulis'],
+            'Tahun': data['Tahun'],
+            'Abstrak': data['Abstrak'],
+            'Source': data['Source'],
+            'Sdgs': data['Sdgs']
+        }), 200
+
+    except KeyError as e:
+        logging.error("Missing key: %s", str(e))
+        return jsonify({'error': f'Missing key: {str(e)}'}), 400
+    except json.JSONDecodeError as e:
+        logging.error("Invalid JSON format: %s", str(e))
+        return jsonify({'error': 'Invalid JSON format'}), 400
+    except Exception as e:
+        logging.error("Unhandled exception: %s", str(e), exc_info=True)
+        return jsonify({'error': str(e)}), 500
+    except json.JSONDecodeError as e:
+        logging.error("JSON decoding error: %s", str(e))
+        return jsonify({'error': 'Invalid JSON format, please check for trailing commas or other syntax errors.'}), 400
+
 
 UPLOAD_FOLDER = '/file'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
