@@ -437,7 +437,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def truncate_text(text, tokenizer, max_length=512):
     tokens = tokenizer.tokenize(text)
-    if len(tokens > max_length):
+    if len(tokens) > max_length:
         return tokenizer.convert_tokens_to_string(tokens[:max_length])
     return text
 
@@ -453,7 +453,7 @@ def classify_sdgs(text):
 def post_paper():
     try:
         data = request.json
-        logging.info("Received data: %s", data)  # Logging data yang diterima
+        logging.info("Received data: %s", data)
 
         required_fields = ['Judul', 'Penulis', 'Tahun', 'Abstrak', 'Source']
         if not data or not all(field in data for field in required_fields):
@@ -474,6 +474,10 @@ def post_paper():
                 hasil_akhir = json.load(f)
         except FileNotFoundError:
             hasil_akhir = []
+        
+        if any(entry['Judul'] == data['Judul'] for entry in hasil_akhir):
+            logging.warning("Duplicate entry found for title: %s", data['Judul'])
+            return jsonify({'error': 'Duplicate entry: Data with the same title already exists'}), 400
 
         hasil_akhir.append(data)
 
@@ -483,13 +487,15 @@ def post_paper():
         logging.info("Data added successfully: %s", data)
         return jsonify({
             'message': 'Data added successfully',
-            'Judul': data['Judul'],
-            'Penulis': data['Penulis'],
-            'Tahun': data['Tahun'],
-            'Abstrak': data['Abstrak'],
-            'Source': data['Source'],
-            'Sdgs': data['Sdgs']
-        }), 200
+            'data': {
+                'Judul': data['Judul'],
+                'Penulis': data['Penulis'],
+                'Tahun': data['Tahun'],
+                'Abstrak': data['Abstrak'],
+                'Source': data['Source'],
+                'Sdgs': data['Sdgs']
+            }
+        }), 201
 
     except KeyError as e:
         logging.error("Missing key: %s", str(e))

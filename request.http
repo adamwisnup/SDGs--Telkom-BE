@@ -3,9 +3,10 @@ POST http://localhost:8080/model/paper
 Content-Type: application/json
 
 {
-  "Judul": "PENGARUH GAYA KEPEMIMPINAN TERHADAP MOTIVASI KERJA PEGAWAI DI PT. POS INDONESIA CABANG SOLO",
-  "Penulis": "Fitriana Tri Lestari Syarifuddin",
-  "Tahun": 2018,
-  "Abstrak": "Tujuan dari penelitian ini adalah untuk mengetahui bagaimana gaya kepemimpinan dan motivasi kerja pegawai di PT Pos Indonesia Cabang Solo, seberapa besar pengaruh gaya kepemimpinan terhadap motivasi kerja pegawai secara parsial dan simultan di PT Pos Indonesia Cabang Solo. Jenis penelitian ini menggunakan metode kuantitatif. Dalam penelitian ini menggunakan penelitian deskriptif dan kausal serta mengumpulkan data menggunakan wawancara, kuisioner, dan studi pustaka. Penelitian ini menggunakan teknik stratified random sampling dan teknik analisis yang digunakan adalah analisis deskriptif dan analisis regresi linier berganda. Berdasarkan hasil uji hipotesis secara parsial, bahwa Ha diterima dan Ho di tolak. Artinya terdapat pengaruh secara signifikan antara gaya kepemimpinan demokratis (X2) terhadap motivasi kerja (Y) pegawai PT Pos Indonesia Cabang Solo.  Dan berdasarkan uji F secara simultan, bahwa H0 ditolak dan Ha diterima, artinya Gaya Kepemimpinan (X) berpengaruh secara simultan dari signifikan terhadap Motivasi Kerja (Y) pegawai PT Pos Indonesia cabang Solo. Sedangkan nilai yang didapat dari R square = 0,533 atau sebesar 53,3% yang berarti bahwa gaya kepemimpinan (X) memberikan kontribusi terhadap motivasi kerja pegawai pada PT Pos Indonesia Cabang Solo sebesar 53,3%, sedangkan 46,7% lainnya merupakan kontribusi dari variabel lain yang tidak diteliti.",
-  "Source": "Sinta",
+    "Judul": "Pengaruh Urbanisasi Terhadap Lingkungan Perkotaan",
+    "Penulis": "Ahmad Fauzan",
+    "Tahun": 2023,
+    "Abstrak": "Artikel ini meneliti dampak urbanisasi terhadap kualitas lingkungan di kota-kota besar, dengan fokus pada polusi udara dan pengelolaan limbah...",
+    "Source": "Jurnal Studi Perkotaan"
 }
+
